@@ -1,0 +1,6 @@
+Target dependency graph (3 targets)
+libjscocos2d iOS in cocos2d_js_bindings
+libcocos2d iOS in cocos2d_libs
+Test-mobile in Test, depends on:
+libjscocos2d iOS in cocos2d_js_bindings (explicit)
+libcocos2d iOS in cocos2d_libs (explicit)
