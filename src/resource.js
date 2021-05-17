@@ -58,7 +58,7 @@ var res = {
     die: 'res/sounds/sfx_die.ogg',
     hit: 'res/sounds/sfx_hit.ogg',
     point: 'res/sounds/sfx_point/ogg',
-    wing: 'res/sounds/wing.ogg'
+    wing: 'res/sounds/sfx_wing.ogg'
 };
 
 
