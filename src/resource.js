@@ -25,6 +25,7 @@
 var res = {
     HelloWorld_png : "res/HelloWorld.png",
     bg: "res/sprites/background-day.png",
+    bg_dark:"res/sprites/background-night.png",
     base: "res/sprites/base.png",
     //IMG
     img_btn_disable:  "res/Button_Disable.png",
@@ -43,11 +44,18 @@ var res = {
     eight: "res/sprites/8.png",
     nine: "res/sprites/9.png",
 
-    //bird
+    //blue bird
     blue_bird_mid: "res/sprites/bluebird-midflap.png",
     blue_bird_up: "res/sprites/bluebird-upflap.png",
     blue_bird_down: "res/sprites/bluebird-downflap.png",
-
+    //red bird
+    red_bird_mid: "res/sprites/redbird-midflap.png",
+    red_bird_up: "res/sprites/redbird-upflap.png",
+    red_bird_down: "res/sprites/redbird-downflap.png",
+    //yellow bird
+    yellow_bird_mid: "res/sprites/yellowbird-midflap.png",
+    yellow_bird_up: "res/sprites/yellowbird-upflap.png",
+    yellow_bird_down: "res/sprites/yellowbird-downflap.png",
     //pipe
     pipe:"res/sprites/pipe-green.png",
 

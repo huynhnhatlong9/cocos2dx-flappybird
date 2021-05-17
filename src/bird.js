@@ -1,21 +1,21 @@
 var Bird = cc.Layer.extend({
-    ctor: function () {
+    ctor: function (src=GAME_ENV.bird) {
         this._super();
         this.status === 'waiting'
         var size = cc.director.getWinSize();
-        this.birdSprite = new cc.Sprite(res.blue_bird_mid);
+        this.birdSprite = new cc.Sprite(src[0]);
         this.birdSprite.setPosition(size.width / 2, size.height / 2);
 
         // Animation
         var birdFrames = [];
         birdFrames.push(
-            new cc.SpriteFrame(res.blue_bird_up, new cc.Rect(0, 0, 34, 24))
+            new cc.SpriteFrame(src[1], new cc.Rect(0, 0, 34, 24))
         );
         birdFrames.push(
-            new cc.SpriteFrame(res.blue_bird_mid, new cc.Rect(0, 0, 34, 24))
+            new cc.SpriteFrame(src[0], new cc.Rect(0, 0, 34, 24))
         );
         birdFrames.push(
-            new cc.SpriteFrame(res.blue_bird_down, new cc.Rect(0, 0, 34, 24))
+            new cc.SpriteFrame(src[2], new cc.Rect(0, 0, 34, 24))
         );
 
         var birdAnimation = cc.Animation.create(birdFrames, 0.1);

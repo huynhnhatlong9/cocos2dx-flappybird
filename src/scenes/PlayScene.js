@@ -10,6 +10,7 @@ var TAG = {
     BIRD: 4,
     PIPE_LAYER: 5,
 };
+
 const spaceSize = (cc.director.getWinSize().height - 112) / 3;
 
 var PlayScene = cc.Scene.extend({

@@ -36,7 +36,12 @@ var BeginLayer = cc.Layer.extend({
         this.base.setPosition(0, 0)
         this.base.setAnchorPoint(0, 0)
         this.addChild(this.base, 1)
+        // Setting button
 
+        this.settingButton = gv.commonButton(100, 50, size.width/2, size.height/2.5, "Setting")
+        this.addChild(this.settingButton, 3)
+        this.settingButton.setTitleFontSize(25);
+        this.settingButton.addClickEventListener(this.settingButtonHandleOnClick)
         // Play button
 
         this.playButton = gv.commonButton(100, 50, size.width/2, size.height/4, "Play")
@@ -52,6 +57,9 @@ var BeginLayer = cc.Layer.extend({
     },
     playButtonHandleOnClick: ()=>{
         cc.director.runScene(new PlayScene())
+    },
+    settingButtonHandleOnClick: ()=>{
+        cc.director.runScene(new SettingScene())
     }
 })
 

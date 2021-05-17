@@ -7,6 +7,7 @@ var Pipes = cc.Layer.extend({
         this.upPipe.setScale(0.5, 1)
         this.upPipe.setRotation(180)
         this.upPipe.setPositionY(320 + spaceSize)
+
         this.downPipe = cc.Sprite.create(res.pipe)
         this.downPipe.setScale(0.5, 1)
         this.addChild(this.upPipe)
