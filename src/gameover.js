@@ -20,6 +20,7 @@ var GameOver = cc.Layer.extend({
     }
     ,
     replayButtonOnClick: () => {
+
         cc.director.runScene(new PlayScene())
     },
     homeButtonOnClick: ()=>{

@@ -1,38 +1,11 @@
-var BIRD_ICON = {
-    RED: 1,
-    BLUE: 2,
-    YELLOW: 3
-}
-var BIRD_STYLE = {
-    RED: [res.red_bird_mid, res.red_bird_up, res.red_bird_down],
-    BLUE: [res.blue_bird_mid, res.blue_bird_up, res.blue_bird_down],
-    YELLOW: [res.yellow_bird_mid, res.yellow_bird_up, res.yellow_bird_down]
-}
-var BG_STYLE = {
-    DAY: res.bg,
-    NIGHT: res.bg_dark
-}
-var GAME_ENV = {
-    bird: BIRD_ICON.BLUE,
-    bg: BG_STYLE.NIGHT
-}
-var getBirdSrcFromStyle = (style) => {
-    switch (style) {
-        case BIRD_ICON.RED:
-            return [res.red_bird_mid, res.red_bird_up, res.red_bird_down]
-        case BIRD_ICON.BLUE:
-            return [res.blue_bird_mid, res.blue_bird_up, res.blue_bird_down]
-        case BIRD_ICON.YELLOW:
-            return [res.yellow_bird_mid, res.yellow_bird_up, res.yellow_bird_down]
-    }
-}
+
 var SettingScene = cc.Scene.extend({
     ctor: function () {
         this._super()
         var size = cc.director.getWinSize()
 
         // Background
-        this.bg = new cc.Sprite(res.bg)
+        this.bg = new cc.Sprite(getBgSrcFromStyle(GAME_ENV.bg))
         this.bg.setPosition(size.width / 2, size.height / 2)
         this.addChild(this.bg, 0)
 
@@ -81,7 +54,7 @@ var SettingScene = cc.Scene.extend({
         this.hardLabel.setPosition(size.width / 1.25, size.height / 2)
         this.addChild(this.hardLabel)
 
-        this.homeButton = gv.commonButton(120, 60, size.width / 2, size.height / 3, 'Home')
+        this.homeButton = gv.commonButton(BTN_SIZE.width, BTN_SIZE.height, size.width / 2, size.height / 3, 'Home')
         this.addChild(this.homeButton)
         this.homeButton.addClickEventListener(this.handleHomeBtnOnClick)
 
@@ -91,6 +64,7 @@ var SettingScene = cc.Scene.extend({
             onMouseDown: function (event) {
                 var pos = event.getLocation()
                 var _this = event.getCurrentTarget()
+
                 var type = null;
                 if (cc.rectContainsPoint(_this.redBird.getBoundingBox(), pos)) {
                     type = BIRD_ICON.RED
@@ -99,19 +73,16 @@ var SettingScene = cc.Scene.extend({
                 } else if (cc.rectContainsPoint(_this.yellowBird.getBoundingBox(), pos)) {
                     type = BIRD_ICON.YELLOW
                 }
-                console.log(GAME_ENV.bird)
-                if (type) {
+                if (type && type !== GAME_ENV.bird) {
                     switch (GAME_ENV.bird) {
                         case BIRD_ICON.RED:
                             _this.redBird.runAction(scaleAction.reverse())
                             break
                         case BIRD_ICON.BLUE:
                             _this.blueBird.runAction(scaleAction.reverse())
-                            GAME_ENV.bird = BIRD_ICON.BLUE
                             break
                         case BIRD_ICON.YELLOW:
-                            _this.blueBird.runAction(scaleAction.reverse())
-                            GAME_ENV.bird = BIRD_ICON.YELLOW
+                            _this.yellowBird.runAction(scaleAction.reverse())
                             break
                     }
                     switch (type) {
@@ -129,11 +100,48 @@ var SettingScene = cc.Scene.extend({
                             break
                     }
                 }
+
+                // Setting Level
+                var level = null
+                if (cc.rectContainsPoint(_this.easyLabel.getBoundingBox(), pos)) {
+                    level = LEVEL.EASY
+                } else if (cc.rectContainsPoint(_this.normalLabel.getBoundingBox(), pos)) {
+                    level = LEVEL.NORMAL
+                } else if (cc.rectContainsPoint(_this.hardLabel.getBoundingBox(), pos)) {
+                    level = LEVEL.HARD
+                }
+                if (level && level !== GAME_ENV.level) {
+                    switch (GAME_ENV.level) {
+                        case LEVEL.EASY:
+                            _this.easyLabel.setColor(cc.color.WHITE)
+                            break
+                        case LEVEL.NORMAL:
+                            _this.normalLabel.setColor(cc.color.WHITE)
+                            break
+                        case LEVEL.HARD:
+                            _this.hardLabel.setColor(cc.color.WHITE)
+                            break
+                    }
+                    switch (level) {
+                        case LEVEL.EASY:
+                            _this.easyLabel.setColor(new cc.Color(241, 196, 15, 1.0))
+                            GAME_ENV.level = level
+                            break
+                        case LEVEL.NORMAL:
+                            _this.normalLabel.setColor(new cc.Color(241, 196, 15, 1.0))
+                            GAME_ENV.level = level
+                            break
+                        case LEVEL.HARD:
+                            _this.hardLabel.setColor(new cc.Color(241, 196, 15, 1.0))
+                            GAME_ENV.level = level
+                            break
+                    }
+                }
             }
         })
 
         cc.eventManager.addListener(event, this)
-
+        // default bird style
         switch (GAME_ENV.bird) {
             case BIRD_ICON.RED:
                 this.redBird.runAction(scaleAction);
@@ -143,6 +151,19 @@ var SettingScene = cc.Scene.extend({
                 break;
             case BIRD_ICON.YELLOW:
                 this.yellowBird.runAction(scaleAction);
+                break;
+        }
+
+        //default level style
+        switch (GAME_ENV.level) {
+            case LEVEL.EASY:
+                this.easyLabel.setColor(new cc.Color(241, 196, 15, 1.0))
+                break;
+            case LEVEL.NORMAL:
+                this.normalLabel.setColor(new cc.Color(241, 196, 15, 1.0))
+                break;
+            case LEVEL.HARD:
+                this.hardLabel.setColor(new cc.Color(241, 196, 15, 1.0))
                 break;
         }
         return true

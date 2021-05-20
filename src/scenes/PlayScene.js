@@ -1,7 +1,7 @@
-var status = {
-    waiting: 1,
-    playing: 2,
-    die: 3,
+var GAME_STATUS = {
+    waiting: 'waiting',
+    playing: 'playing',
+    gameover: 'gameover',
 };
 var TAG = {
     BASE: 1,
@@ -11,11 +11,11 @@ var TAG = {
     PIPE_LAYER: 5,
 };
 
-const spaceSize = (cc.director.getWinSize().height - 112) / 3;
 
 var PlayScene = cc.Scene.extend({
     ctor: function () {
         this._super();
+        resetEnv()
         this.env = null;
         this.status = "waiting";
         size = cc.director.getWinSize();
@@ -36,7 +36,7 @@ var PlayScene = cc.Scene.extend({
         this.addChild(this.pipe_layer, 3, TAG.PIPE_LAYER);
 
         this.message = new Message()
-        this.addChild(this.message,6)
+        this.addChild(this.message, 6)
 
         this.game_over = new GameOver()
         this.game_over.visible = false
@@ -46,8 +46,8 @@ var PlayScene = cc.Scene.extend({
             event: cc.EventListener.KEYBOARD,
             onKeyPressed: function (keyCode, event) {
                 target = event.getCurrentTarget();
-                if (keyCode === 32 && target.status !== 'gameover') {
-                    if (target.status === 'waiting') {
+                if (keyCode === 32 && target.status !== GAME_STATUS.gameover) {
+                    if (target.status === GAME_STATUS.waiting) {
                         target.score.visible = true
                         target.message.removeFromParent()
                     }
@@ -81,7 +81,7 @@ var PlayScene = cc.Scene.extend({
         };
     },
     handleGameOver: function () {
-        this.children.map((e)=>{
+        this.children.map((e) => {
             e.stopAllActions()
         })
         this.bird.birdSprite.stopAllActions()
@@ -92,7 +92,7 @@ var PlayScene = cc.Scene.extend({
         this.game_over.visible = true
         this.game_over.scoreText.setString('Score: ' + this.env.score)
         this.score.visible = false
-        this.status = 'gameover'
+        this.status = GAME_STATUS.gameover
         this.unscheduleAllCallbacks()
     },
     checkCollision: function () {
@@ -100,21 +100,28 @@ var PlayScene = cc.Scene.extend({
         let pipes = this.pipe_layer.pipes
         let leftBirdZone = birdSprite.getPositionX() - birdSprite.getBoundingBox().width / 2
         let rightBirdZone = birdSprite.getPositionX() + birdSprite.getBoundingBox().width / 2
-
+        var spaceSize = getSpaceByLevel(GAME_ENV.level);
         for (let i = 0; i < pipes.length; i++) {
             let pipe = pipes[i]
-            let leftPipeZone = pipe.getPositionX() - pipe.upPipe.getBoundingBox().width / 2
-            let rightPipeZone = pipe.getPositionX() + pipe.upPipe.getBoundingBox().width / 2
-            if ((rightBirdZone >= leftPipeZone && rightBirdZone <= rightPipeZone) || (leftBirdZone >= leftPipeZone && leftBirdZone <= rightPipeZone)) {
-                if (!(birdSprite.getPositionY()+birdSprite.getBoundingBox().height/2 <= pipe.getPositionY() + pipe.upPipe.getBoundingBox().height / 2 + spaceSize)
-                    || !(birdSprite.getPositionY()-birdSprite.getBoundingBox().height/2 >= pipe.getPositionY() + pipe.downPipe.getBoundingBox().height / 2)) {
-                    this.status='gameover'
+            let leftPipeZone = pipe.getPositionX() - pipe.upPipe.getBoundingBox().width / 2+3
+            let rightPipeZone = pipe.getPositionX() + pipe.upPipe.getBoundingBox().width / 2-3
+            if ((rightBirdZone >= leftPipeZone && rightBirdZone  <= rightPipeZone)
+                || (leftBirdZone >= leftPipeZone && leftBirdZone <= rightPipeZone)
+                || ((leftBirdZone+rightBirdZone)/2 >= leftPipeZone && (leftBirdZone+rightBirdZone)/2 <= rightPipeZone)) {
+                if (!(birdSprite.getPositionY() + birdSprite.getBoundingBox().height / 2 -2 <= pipe.getPositionY() + pipe.upPipe.getBoundingBox().height / 2 + spaceSize)
+                    || !(birdSprite.getPositionY() - birdSprite.getBoundingBox().height / 2+2 >= pipe.getPositionY() + pipe.downPipe.getBoundingBox().height / 2)) {
+                    this.status = GAME_STATUS.gameover
                     this.handleGameOver()
-                }
-                else {
-                    this.env.score += pipe.visited?0:1;
-                    this.score.updateScore(this.env.score)
-                    console.log(this.env.score)
+                } else {
+
+                    if (!pipe.visited) {
+                        this.env.score += 1;
+                        if (this.env.score % 10 === 0) {
+                            this.background.changeBg()
+                            GAME_ENV.dScroll += 10
+                        }
+                        this.score.updateScore(this.env.score)
+                    }
                 }
                 pipe.visited = true
                 break
@@ -126,6 +133,7 @@ var PlayScene = cc.Scene.extend({
     update: function (dt) {
         this.checkCollision()
         this.bird.update_function(dt)
+        this.base.scroll(dt)
         this.pipe_layer.update_function(dt)
     }
 

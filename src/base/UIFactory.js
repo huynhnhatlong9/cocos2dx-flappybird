@@ -5,7 +5,6 @@
 var gv = gv||{};
 
 gv.commonButton = function(w, h, x, y, text){
-    console.log("ok")
     if(text === undefined)
         text = "";
     var btn = new ccui.Button(res.img_btn_normal, res.img_btn_normal, res.img_btn_disable);
